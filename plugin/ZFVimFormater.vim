@@ -7,6 +7,7 @@ function! ZF_FormaterAuto()
     if !success
         try
             Neoformat
+            normal! ``
             let success += 1
             let msg .= 'Neoformat'
         endtry
