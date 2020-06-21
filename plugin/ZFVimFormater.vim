@@ -2,13 +2,12 @@
 function! ZF_FormaterAuto()
     let msg = 'formated by '
     let success = 0
+    let cursor = getpos('.')
     normal! gg=G
 
     if !success
         try
-            normal! m`
             silent! Neoformat
-            normal! ``
             let success += 1
             let msg .= 'Neoformat'
         endtry
@@ -25,6 +24,7 @@ function! ZF_FormaterAuto()
     if !success
         let msg .= 'indent'
     endif
+    call setpos('.', cursor)
     redraw!
     echomsg msg
 endfunction
