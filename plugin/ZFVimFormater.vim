@@ -6,7 +6,8 @@ function! ZF_FormaterAuto()
 
     if !success
         try
-            Neoformat
+            normal! m`
+            silent! Neoformat
             normal! ``
             let success += 1
             let msg .= 'Neoformat'
@@ -25,7 +26,7 @@ function! ZF_FormaterAuto()
         let msg .= 'indent'
     endif
     redraw!
-    echo msg
+    echomsg msg
 endfunction
 
 " format xml files
@@ -270,7 +271,7 @@ function! ZF_AutoFormat(...)
             let s:autoFormatMap[filetype] = 1
             augroup ZF_AutoFormatToggle_augroup
                 autocmd!
-                autocmd BufWrite * :call ZF_AutoFormatCheck()
+                autocmd BufWritePre * :call ZF_AutoFormatCheck()
             augroup END
         else
             silent! call remove(s:autoFormatMap, filetype)
