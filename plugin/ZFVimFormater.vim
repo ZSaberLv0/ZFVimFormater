@@ -2,7 +2,7 @@
 function! ZF_FormaterAuto()
     let msg = 'formated by '
     let success = 0
-    let cursor = getpos('.')
+    let oldState = winsaveview()
     normal! gg=G
 
     if !success
@@ -24,7 +24,7 @@ function! ZF_FormaterAuto()
     if !success
         let msg .= 'indent'
     endif
-    call setpos('.', cursor)
+    call winrestview(oldState)
     redraw!
     echomsg msg
 endfunction
