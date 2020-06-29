@@ -50,8 +50,6 @@ endfunction
 " require
 "     Plugin 'ZSaberLv0/ZFVimBeautifier'
 "     Plugin 'ZSaberLv0/ZFVimBeautifierTemplate'
-"     Plugin 'elzr/vim-json'
-"     let g:vim_json_syntax_conceal=0
 function! ZF_FormaterJson()
     call ZFBeautifier('json')
     set filetype=json
@@ -63,91 +61,6 @@ endfunction
 
 " format markdown
 " use pandoc to convert, well formated, but need pandoc installed and in PATH
-" note: additional format for WP Code Highlight for Wordpress
-function! ZF_FormaterMarkdownToHtmlWithWPCodeHighlight()
-    let output_file = s:tempname() . '.html'
-    let input_file = s:tempname() . '.md'
-
-    silent! %s/\v([^_]|^)_([^_]|$)/\1\{z-underline-z\}\2/g
-    silent! %s/\v([^_]|^)_([^_]|$)/\1\{z-underline-z\}\2/g
-
-    silent! %s/\v\&amp;/\{z-amp-z\}/g
-    silent! %s/\v\&quot;/\{z-quot-z\}/g
-    silent! %s/\v\&lt;/\{z-lt-z\}/g
-    silent! %s/\v\&gt;/\{z-gt-z\}/g
-    silent! %s/\v\&nbsp;/\{z-nbsp-z\}/g
-    silent! %s/\v\&#39;/\{z-39-z\}/g
-
-    let content=getline(1, '$')
-    call writefile(content, input_file)
-    silent! execute '!pandoc -f markdown -t html -o "' . output_file . '" "' . input_file . '"'
-    new
-    silent! execute 'read ' . output_file . ''
-    normal! ggvG$y
-    bd!
-
-    normal! ggvG$p
-    call delete(input_file)
-    call delete(output_file)
-    silent! %s/<pre\([^<>]*\)><code>/<pre\1>\r/g
-    silent! %s/<\/code><\/pre>/\r<\/pre>/g
-
-    " enable if used in wordpress with WP Code Highlight plugin
-    " which would escape all chars automatically
-    if 1
-        silent! %s/\v^([ \t]*)$/\1\{z-endl-z\}/g
-        silent! %s/ /\{z-space-z\}/g
-        silent! g/<pre[^<>]*>\_.\{-}<\/pre>/,/<\/pre>/j
-
-        silent! g/<pre[^<>]*>.*<\/pre>/s/&amp;/\&/ge
-        silent! g/<pre[^<>]*>.*<\/pre>/s/\v\{z-amp-z\}/\&amp;/ge
-
-        silent! g/<pre[^<>]*>.*<\/pre>/s/&quot;/"/ge
-        silent! g/<pre[^<>]*>.*<\/pre>/s/\v\{z-quot-z\}/\&quot;/ge
-
-        silent! g/<pre[^<>]*>.*<\/pre>/s/&lt;/</ge
-        silent! g/<pre[^<>]*>.*<\/pre>/s/\v\{z-lt-z\}/\&lt;/ge
-
-        silent! g/<pre[^<>]*>.*<\/pre>/s/&gt;/>/ge
-        silent! g/<pre[^<>]*>.*<\/pre>/s/\v\{z-gt-z\}/\&gt;/ge
-
-        silent! g/<pre[^<>]*>.*<\/pre>/s/&nbsp;/\{z-space-z\}/ge
-        silent! g/<pre[^<>]*>.*<\/pre>/s/\v\{z-nbsp-z\}/\&nbsp;/ge
-
-        silent! g/<pre[^<>]*>.*<\/pre>/s/&#39;/'/ge
-        silent! g/<pre[^<>]*>.*<\/pre>/s/\v\{z-39-z\}/\&#39;/ge
-
-        silent! g/<pre[^<>]*>.*<\/pre>/s/<br \/>//ge
-
-        silent! g/<pre[^<>]*>.*<\/pre>/s/ /\r/ge
-        silent! %s/\v\{z-space-z\}/ /g
-        silent! %s/\v\{z-endl-z\}//g
-    endif
-
-    normal! gg
-    silent! s/^/<tt>\r/
-    normal! G
-    silent! s/$/\r<\/tt>/
-
-    normal! gg
-    silent! s/^/<head><meta charset="UTF-8"><\/head>\r/
-
-    silent! %s/\v\{z-space-z\}/ /g
-    silent! %s/\v\{z-underline-z\}/_/g
-
-    silent! %s/\v\{z-amp-z\}/\&amp;amp;/g
-    silent! %s/\v\{z-quot-z\}/\&amp;quot;/g
-    silent! %s/\v\{z-lt-z\}/\&amp;lt;/g
-    silent! %s/\v\{z-gt-z\}/\&amp;gt;/g
-    silent! %s/\v\{z-nbsp-z\}/\&amp;nbsp;/g
-    silent! %s/\v\{z-39-z\}/\&amp;#39;/g
-
-    silent! %s/\v(\<a href\="[^"]+")/\1 target="_blank"/g
-    normal! ggvG$y
-endfunction
-
-" for normal md mkd files
-" without WP Code Highlight, all code block must be escaped manually
 function! ZF_FormaterMarkdownToHtml()
     let output_file = s:tempname() . '.html'
     let input_file = s:tempname() . '.md'
@@ -309,7 +222,6 @@ function! ZF_Formater()
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'html (plain regexp replace)', 'command':'call ZF_FormaterHtml()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'json (plain regexp replace)', 'command':'call ZF_FormaterJson()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'markdown to html', 'command':'call ZF_FormaterMarkdownToHtml()'})
-    call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'markdown to html (with WP Code Highlight)', 'command':'call ZF_FormaterMarkdownToHtmlWithWPCodeHighlight()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'markdown to html file', 'command':'call ZF_FormaterMarkdownToHtmlFile()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'markdown insert TOC', 'command':'call ZF_FormaterMarkdownInsertTocStyle()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'markdown preview', 'command':'call ZF_FormaterMarkdownPreview()'})
