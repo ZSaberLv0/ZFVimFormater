@@ -68,12 +68,9 @@ function! ZF_FormaterMarkdownToHtml()
     let content=getline(1, '$')
     call writefile(content, input_file)
     silent! execute '!pandoc -f markdown -t html -o "' . output_file . '" "' . input_file . '"'
-    new
-    silent! execute 'read ' . output_file . ''
-    normal! ggvG$y
-    bd!
 
-    normal! ggvG$p
+    normal! ggdG
+    silent! execute 'read ' . output_file . ''
     call delete(input_file)
     call delete(output_file)
 
