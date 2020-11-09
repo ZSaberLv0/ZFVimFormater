@@ -1,5 +1,16 @@
 
-function! ZF_FormaterAuto()
+function! ZF_FormaterAuto(...)
+    let askFileType = get(a:, 1, 0)
+    if askFileType && empty(&filetype)
+        redraw!
+        call inputsave()
+        let filetype = input('[ZFFormater] input filetype: ')
+        call inputrestore()
+        if !empty(filetype)
+            execute 'set filetype=' . filetype
+        endif
+    endif
+
     let msg = 'formated by '
     let success = 0
     let oldState = winsaveview()
@@ -213,7 +224,7 @@ endif
 
 " util method
 function! ZF_Formater()
-    call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'auto (syntax aware)', 'command':'call ZF_FormaterAuto()'})
+    call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'auto (syntax aware)', 'command':'call ZF_FormaterAuto(1)'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'toggle auto format', 'command':'call ZF_AutoFormat()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'xml (plain regexp replace)', 'command':'call ZF_FormaterXml()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'html (plain regexp replace)', 'command':'call ZF_FormaterHtml()'})
