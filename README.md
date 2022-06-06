@@ -50,10 +50,6 @@ vim script to format some file types
     let g:vim_json_syntax_conceal=0
     ```
 
-* `ZF_FormaterMarkdownToHtmlWithWPCodeHighlight()` : format markdown to html that wordpress supported with WP Code Highlight
-
-    require [pandoc](http://pandoc.org/)
-
 * `ZF_FormaterMarkdownToHtml()` : format markdown to html
 
     require [pandoc](http://pandoc.org/)
