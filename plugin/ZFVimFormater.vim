@@ -96,21 +96,32 @@ function! ZF_FormaterMarkdownToHtmlFile()
     let l:src = expand('%:p')
     let l:dst = expand('%:p:h') . '/' . expand('%:p:t:r') . '.html'
     normal! ggvG$y
-    new
+    enew
     normal! ggVG"_dp
+    let bufnr = bufnr('')
     call ZF_FormaterMarkdownToHtml()
     execute ':w! ' . l:dst
-    bd!
+    execute bufnr . 'bd!'
 endfunction
 
 " view as markdown
 function! ZF_FormaterMarkdownPreview()
     normal! ggvG$y
-    new
+    enew
     normal! p
+    let bufnr = bufnr('')
     call ZF_FormaterMarkdownToHtml()
     call ZF_FormaterHtmlPreview()
-    bd!
+    execute bufnr . 'bd!'
+endfunction
+function! ZF_FormaterMarkdownPreviewW3m()
+    normal! ggvG$y
+    enew
+    normal! p
+    let bufnr = bufnr('')
+    call ZF_FormaterMarkdownToHtml()
+    call ZF_FormaterHtmlPreviewW3m()
+    execute bufnr . 'bd!'
 endfunction
 
 " insert predefined markdown TOC style
@@ -125,13 +136,14 @@ endfunction
 " view as markdown with TOC
 function! ZF_FormaterMarkdownPreviewWithToc()
     normal! ggvG$y
-    new
+    enew
     call ZF_FormaterMarkdownInsertTocStyle()
     normal! G
     normal! p
+    let bufnr = bufnr('')
     call ZF_FormaterMarkdownToHtml()
     call ZF_FormaterHtmlPreview()
-    bd!
+    execute bufnr . 'bd!'
 endfunction
 
 " view as html
@@ -154,6 +166,18 @@ function! ZF_FormaterHtmlPreview()
             call system('xdg-open "' . tmp_file . '"')
         endif
     endif
+endfunction
+
+function! ZF_FormaterHtmlPreviewW3m()
+    if !exists(':W3m')
+        echo 'yuratomo/w3m.vim not installed'
+        return
+    endif
+
+    let tmp_file = s:tempname() . '.html'
+    let content=getline(1, '$')
+    call writefile(content, tmp_file)
+    execute 'W3m local ' . tmp_file
 endfunction
 
 " format unicode punctuation to ansi punctuation
@@ -234,6 +258,7 @@ function! ZF_Formater()
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'markdown insert TOC', 'command':'call ZF_FormaterMarkdownInsertTocStyle()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'markdown preview', 'command':'call ZF_FormaterMarkdownPreview()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'markdown preview (with TOC)', 'command':'call ZF_FormaterMarkdownPreviewWithToc()'})
+    call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'markdown preview (W3m)', 'command':'call ZF_FormaterMarkdownPreviewW3m()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'html preview', 'command':'call ZF_FormaterHtmlPreview()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'remove unicode punctuation', 'command':'call ZF_FormaterUnicodePunctuation()'})
 
