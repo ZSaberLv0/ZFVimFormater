@@ -260,6 +260,7 @@ function! ZF_Formater()
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'markdown preview (with TOC)', 'command':'call ZF_FormaterMarkdownPreviewWithToc()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'markdown preview (W3m)', 'command':'call ZF_FormaterMarkdownPreviewW3m()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'html preview', 'command':'call ZF_FormaterHtmlPreview()'})
+    call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'html preview (W3m)', 'command':'call ZF_FormaterHtmlPreviewW3m()'})
     call ZF_VimCmdMenuAdd({'showKeyHint':1, 'text':'remove unicode punctuation', 'command':'call ZF_FormaterUnicodePunctuation()'})
 
     call ZF_VimCmdMenuShow({'headerText':'format options:'})
